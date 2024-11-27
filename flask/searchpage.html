@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        input, button {
+            padding: 10px;
+            margin-right: 10px;
+        }
+
+        #results div {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <h1>Search Dessert Recipes</h1>
+    <form id="search-form">
+        <input type="text" id="query-text" placeholder="Enter ingredient or title">
+        <button type="button" onclick="performSearch()">Search</button>
+    </form>
+    <div id="results"></div>
+
+    <script>
+        function performSearch() {
+            const queryText = document.getElementById('query-text').value;
+            fetch('/search', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query_text: queryText })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultsDiv = document.getElementById('results');
+                resultsDiv.innerHTML = '';
+                data.recipes.forEach(recipe => {
+                    const recipeDiv = document.createElement('div');
+                    recipeDiv.innerHTML = `<h3>${recipe.title}</h3>
+                                           <p>${recipe.description}</p>`;
+                    resultsDiv.appendChild(recipeDiv);
+                });
+            });
+        }
+    </script>
+</body>
+</html>
